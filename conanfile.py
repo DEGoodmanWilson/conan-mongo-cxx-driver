@@ -72,14 +72,22 @@ class MongoCxxConan(ConanFile):
 
     def package(self):
         self.copy(pattern="COPYING*", src="sources")
-        self.copy(pattern="*.h", dst="include/bson", src="sources/src/libbson/src/bson", keep_path=False)
-        self.copy(pattern="*.h", dst="include/jsonsl", src="sources/src/libbson/src/jsonsl", keep_path=False)
-        self.copy(pattern="*.h", dst="include/mongoc", src="sources/src/mongoc", keep_path=False)
+        self.copy(pattern="*.hpp", dst="include/bsoncxx", src="sources/src/bsoncxx", keep_path=False)
+        self.copy(pattern="*.hpp", dst="include/mongocxx", src="sources/src/mongocxx", keep_path=False)
         # self.copy(pattern="*.dll", dst="bin", src="bin", keep_path=False)
-        self.copy(pattern="*.lib", dst="lib", src="sources", keep_path=False)
-        self.copy(pattern="*.a", dst="lib", src="sources", keep_path=False)
-        self.copy(pattern="*.so*", dst="lib", src="sources", keep_path=False)
-        self.copy(pattern="*.dylib", dst="lib", src="sources", keep_path=False)
+
+        # TODO ONLY IF IT EXISTS!
+        # TODO what files exist when building shared objects?
+        # os.remove("lib/libbsoncxx-testing.a")
+        # os.remove("lib/libmongocxx-mocked.a")
+        # os.rename("lib/libmongocxx-static.a", "lib/libmongocxx.a")
+        # os.rename("lib/libbsoncxx-static.a", "lib/libbsoncxx.a")
+        self.copy(pattern="*.lib", dst="lib", src="lib", keep_path=False)
+        self.copy(pattern="*.a", dst="lib", src="lib", keep_path=False)
+        self.copy(pattern="*.so*", dst="lib", src="lib", keep_path=False)
+        self.copy(pattern="*.dylib", dst="lib", src="lib", keep_path=False)
+
+        #libs are in lib. Rename -static.a and don't copy -mocked.a
 
     def package_info(self):
         self.cpp_info.libs = ['mongoc', 'bson']
