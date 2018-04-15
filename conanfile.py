@@ -3,6 +3,8 @@
 
 from conans import ConanFile, CMake, tools
 import os
+import shutil
+import re
 
 class MongoCxxConan(ConanFile):
     name = "mongocxx"
@@ -70,28 +72,47 @@ class MongoCxxConan(ConanFile):
         cmake.configure(source_dir="sources")
         cmake.build()
 
+    def purge(self, dir, pattern):
+        for f in os.listdir(dir):
+            if re.search(pattern, f):
+                # print "removing {0}".format(os.path.join(dir, f))
+                os.remove(os.path.join(dir, f))
+
     def package(self):
         self.copy(pattern="COPYING*", src="sources")
         self.copy(pattern="*.hpp", dst="include/bsoncxx", src="sources/src/bsoncxx", keep_path=False)
         self.copy(pattern="*.hpp", dst="include/mongocxx", src="sources/src/mongocxx", keep_path=False)
         # self.copy(pattern="*.dll", dst="bin", src="bin", keep_path=False)
 
-        # TODO ONLY IF IT EXISTS!
-        # TODO what files exist when building shared objects?
-        # os.remove("lib/libbsoncxx-testing.a")
-        # os.remove("lib/libmongocxx-mocked.a")
-        # os.rename("lib/libmongocxx-static.a", "lib/libmongocxx.a")
-        # os.rename("lib/libbsoncxx-static.a", "lib/libbsoncxx.a")
-        self.copy(pattern="*.lib", dst="lib", src="lib", keep_path=False)
-        self.copy(pattern="*.a", dst="lib", src="lib", keep_path=False)
-        self.copy(pattern="*.so*", dst="lib", src="lib", keep_path=False)
-        self.copy(pattern="*.dylib", dst="lib", src="lib", keep_path=False)
+        # self.purge("lib", "lib.*testing.*".format(self.version))
+        # self.purge("lib", "lib.*mocked.*".format(self.version))
+        # # self.purge("lib", "lib.*_noabi.*".format(self.version))
 
-        #libs are in lib. Rename -static.a and don't copy -mocked.a
+        try:
+            os.rename("lib/libmongocxx-static.a", "lib/libmongocxx.a")
+        except:
+            pass
+        try:
+            os.rename("lib/libbsoncxx-static.a", "lib/libbsoncxx.a")
+        except:
+            pass
+        try:
+            os.rename("lib/libmongocxx-static.lib", "lib/libmongocxx.lib")
+        except:
+            pass
+        try:
+            os.rename("lib/libbsoncxx-static.lib", "lib/libbsoncxx.lib")
+        except:
+            pass
+        self.copy(pattern="lib*cxx.lib", dst="lib", src="lib", keep_path=False)
+        self.copy(pattern="lib*cxx.a", dst="lib", src="lib", keep_path=False)
+        self.copy(pattern="lib*cxx.so*", dst="lib", src="lib", keep_path=False)
+        self.copy(pattern="lib*cxx.dylib", dst="lib", src="lib", keep_path=False)
 
     def package_info(self):
         self.cpp_info.libs = ['mongoc', 'bson']
         if tools.os_info.is_macos:
+            # TODO is this right? Do we need these?
             self.cpp_info.exelinkflags = ['-framework CoreFoundation', '-framework Security']
             self.cpp_info.sharedlinkflags = self.cpp_info.exelinkflags
 
