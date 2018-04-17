@@ -18,11 +18,6 @@ class MongoCxxConan(ConanFile):
     requires = 'mongo-c-driver/[~=1.9]@DEGoodmanWilson/testing'
     generators = "cmake"
 
-    # def requirements(self):
-    #     if tools.os_info.is_windows:
-    # Which parts of boost does mongo want?
-    #         Boost/1.64.0@conan/stable
-
     def source(self):
         tools.get("https://github.com/mongodb/mongo-cxx-driver/archive/r{0}.tar.gz".format(self.version))
         extracted_dir = "mongo-cxx-driver-r{0}".format(self.version)
@@ -115,5 +110,7 @@ class MongoCxxConan(ConanFile):
             # TODO is this right? Do we need these?
             self.cpp_info.exelinkflags = ['-framework CoreFoundation', '-framework Security']
             self.cpp_info.sharedlinkflags = self.cpp_info.exelinkflags
+        if tools.os_info.is_linux:
+            self.cpp_info.libs.append("rt")
 
 
