@@ -77,6 +77,8 @@ class MongoCxxConan(ConanFile):
         self.copy(pattern="COPYING*", src="sources")
         self.copy(pattern="*.hpp", dst="include/bsoncxx", src="sources/src/bsoncxx", keep_path=True)
         self.copy(pattern="*.hpp", dst="include/mongocxx", src="sources/src/mongocxx", keep_path=True)
+        self.copy(pattern="*.hpp", dst="include/bsoncxx", src="src/bsoncxx", keep_path=True)
+        self.copy(pattern="*.hpp", dst="include/mongocxx", src="src/mongocxx", keep_path=True)
         # self.copy(pattern="*.dll", dst="bin", src="bin", keep_path=False)
 
         # self.purge("lib", "lib.*testing.*".format(self.version))
