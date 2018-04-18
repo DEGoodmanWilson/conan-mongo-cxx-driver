@@ -79,6 +79,7 @@ class MongoCxxConan(ConanFile):
         self.copy(pattern="*.hpp", dst="include/mongocxx", src="sources/src/mongocxx", keep_path=True)
         self.copy(pattern="*.hpp", dst="include/bsoncxx", src="src/bsoncxx", keep_path=True)
         self.copy(pattern="*.hpp", dst="include/mongocxx", src="src/mongocxx", keep_path=True)
+        self.copy(pattern="*.hpp", dst="include/bsoncxx/third_party/mnmlstc/core", src="src/bsoncxx/third_party/EP_mnmlstc_core-prefix/src/EP_mnmlstc_core/include/core", keep_path=False)
         # self.copy(pattern="*.dll", dst="bin", src="bin", keep_path=False)
 
         # self.purge("lib", "lib.*testing.*".format(self.version))
@@ -107,6 +108,7 @@ class MongoCxxConan(ConanFile):
         self.copy(pattern="lib*cxx.dylib", dst="lib", src="lib", keep_path=False)
 
     def package_info(self):
-        self.cpp_info.libs = ['mongoc', 'bson']
+        self.cpp_info.libs = ['mongocxx', 'bsoncxx']
+        self.cpp_info.includedirs.append('include/bsoncxx/third_party/mnmlstc')
 
 
