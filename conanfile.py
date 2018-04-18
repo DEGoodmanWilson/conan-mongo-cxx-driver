@@ -106,6 +106,7 @@ class MongoCxxConan(ConanFile):
         self.copy(pattern="lib*cxx.a", dst="lib", src="lib", keep_path=False)
         self.copy(pattern="lib*cxx.so*", dst="lib", src="lib", keep_path=False)
         self.copy(pattern="lib*cxx.dylib", dst="lib", src="lib", keep_path=False)
+        self.copy(pattern="lib*cxx._noabi.dylib", dst="lib", src="lib", keep_path=False)
 
     def package_info(self):
         self.cpp_info.libs = ['mongocxx', 'bsoncxx']
