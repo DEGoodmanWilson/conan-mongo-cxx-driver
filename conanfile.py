@@ -15,7 +15,7 @@ class MongoCxxConan(ConanFile):
     settings =  "os", "compiler", "arch", "build_type"
     options = {"shared": [True, False]}
     default_options = "shared=False"
-    requires = 'mongo-c-driver/[~=1.9]@DEGoodmanWilson/testing'
+    requires = 'mongo-c-driver/[~=1.9]@DEGoodmanWilson/stable'
     generators = "cmake"
 
     def source(self):
